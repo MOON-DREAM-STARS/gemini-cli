@@ -67,13 +67,9 @@ When contributing to this React, Node, and TypeScript codebase, please prioritiz
 JavaScript classes, by their nature, are designed to encapsulate internal state and behavior. While this can be useful in some object-oriented paradigms, it often introduces unnecessary complexity and friction when working with React's component-based architecture. Here's why plain objects are preferred:
 
 - Seamless React Integration: React components thrive on explicit props and state management. Classes' tendency to store internal state directly within instances can make prop and state propagation harder to reason about and maintain. Plain objects, on the other hand, are inherently immutable (when used thoughtfully) and can be easily passed as props, simplifying data flow and reducing unexpected side effects.
-
 - Reduced Boilerplate and Increased Conciseness: Classes often promote the use of constructors, this binding, getters, setters, and other boilerplate that can unnecessarily bloat code. TypeScript interface and type declarations provide powerful static type checking without the runtime overhead or verbosity of class definitions. This allows for more succinct and readable code, aligning with JavaScript's strengths in functional programming.
-
 - Enhanced Readability and Predictability: Plain objects, especially when their structure is clearly defined by TypeScript interfaces, are often easier to read and understand. Their properties are directly accessible, and there's no hidden internal state or complex inheritance chains to navigate. This predictability leads to fewer bugs and a more maintainable codebase.
-
 - Simplified Immutability: While not strictly enforced, plain objects encourage an immutable approach to data. When you need to modify an object, you typically create a new one with the desired changes, rather than mutating the original. This pattern aligns perfectly with React's reconciliation process and helps prevent subtle bugs related to shared mutable state.
-
 - Better Serialization and Deserialization: Plain JavaScript objects are naturally easy to serialize to JSON and deserialize back, which is a common requirement in web development (e.g., for API communication or local storage). Classes, with their methods and prototypes, can complicate this process.
 
 ### Embracing ES Module Syntax for Encapsulation
@@ -81,9 +77,7 @@ JavaScript classes, by their nature, are designed to encapsulate internal state 
 Rather than relying on Java-esque private or public class members, which can be verbose and sometimes limit flexibility, we strongly prefer leveraging ES module syntax (`import`/`export`) for encapsulating private and public APIs.
 
 - Clearer Public API Definition: With ES modules, anything that is exported is part of the public API of that module, while anything not exported is inherently private to that module. This provides a very clear and explicit way to define what parts of your code are meant to be consumed by other modules.
-
 - Enhanced Testability (Without Exposing Internals): By default, unexported functions or variables are not accessible from outside the module. This encourages you to test the public API of your modules, rather than their internal implementation details. If you find yourself needing to spy on or stub an unexported function for testing purposes, it's often a "code smell" indicating that the function might be a good candidate for extraction into its own separate, testable module with a well-defined public API. This promotes a more robust and maintainable testing strategy.
-
 - Reduced Coupling: Explicitly defined module boundaries through import/export help reduce coupling between different parts of your codebase. This makes it easier to refactor, debug, and understand individual components in isolation.
 
 ### Avoiding `any` Types and Type Assertions; Preferring `unknown`
@@ -91,10 +85,10 @@ Rather than relying on Java-esque private or public class members, which can be 
 TypeScript's power lies in its ability to provide static type checking, catching potential errors before your code runs. To fully leverage this, it's crucial to avoid the `any` type and be judicious with type assertions.
 
 - **The Dangers of `any`**: Using any effectively opts out of TypeScript's type checking for that particular variable or expression. While it might seem convenient in the short term, it introduces significant risks:
+
   - **Loss of Type Safety**: You lose all the benefits of type checking, making it easy to introduce runtime errors that TypeScript would otherwise have caught.
   - **Reduced Readability and Maintainability**: Code with `any` types is harder to understand and maintain, as the expected type of data is no longer explicitly defined.
   - **Masking Underlying Issues**: Often, the need for any indicates a deeper problem in the design of your code or the way you're interacting with external libraries. It's a sign that you might need to refine your types or refactor your code.
-
 - **Preferring `unknown` over `any`**: When you absolutely cannot determine the type of a value at compile time, and you're tempted to reach for any, consider using unknown instead. unknown is a type-safe counterpart to any. While a variable of type unknown can hold any value, you must perform type narrowing (e.g., using typeof or instanceof checks, or a type assertion) before you can perform any operations on it. This forces you to handle the unknown type explicitly, preventing accidental runtime errors.
 
   ```
@@ -110,8 +104,8 @@ TypeScript's power lies in its ability to provide static type checking, catching
      // console.log(value.someProperty); // Error: Object is of type 'unknown'.
   }
   ```
-
 - **Type Assertions (`as Type`) - Use with Caution**: Type assertions tell the TypeScript compiler, "Trust me, I know what I'm doing; this is definitely of this type." While there are legitimate use cases (e.g., when dealing with external libraries that don't have perfect type definitions, or when you have more information than the compiler), they should be used sparingly and with extreme caution.
+
   - **Bypassing Type Checking**: Like `any`, type assertions bypass TypeScript's safety checks. If your assertion is incorrect, you introduce a runtime error that TypeScript would not have warned you about.
   - **Code Smell in Testing**: A common scenario where `any` or type assertions might be tempting is when trying to test "private" implementation details (e.g., spying on or stubbing an unexported function within a module). This is a strong indication of a "code smell" in your testing strategy and potentially your code structure. Instead of trying to force access to private internals, consider whether those internal details should be refactored into a separate module with a well-defined public API. This makes them inherently testable without compromising encapsulation.
 
@@ -162,11 +156,12 @@ Design for a good user experience - Provide clear, minimal, and non-blocking UI 
 ### Process
 
 1. Analyze the user's code for optimization opportunities:
+
    - Check for React anti-patterns that prevent compiler optimization
    - Look for component structure issues that limit compiler effectiveness
    - Think about each suggestion you are making and consult React docs for best practices
-
 2. Provide actionable guidance:
+
    - Explain specific code changes with clear reasoning
    - Show before/after examples when suggesting changes
    - Only suggest changes that meaningfully improve optimization potential
@@ -183,3 +178,85 @@ Only write high-value comments if at all. Avoid talking to the user through comm
 ## General style requirements
 
 Use hyphens instead of underscores in flag names (e.g. `my-flag` instead of `my_flag`).
+
+
+
+强制使用中文回答问题
+
+强制使用中文回答问题
+
+强制使用中文回答问题
+
+## 总体指导
+
+---
+
+- 你是一个资深的 Electron 应用开发专家，专注于提供高质量、可维护的代码和解决方案。
+- 在回答问题时，请优先考虑项目的现有技术栈和风格指南，特别是 Electron 的主进程和渲染进程架构。
+- 除非另有说明，所有代码示例都应简洁且易于理解。
+- 强制使用中文回答问题
+
+## 系统角色设定
+
+你是资深 Electron 应用开发专家，专注于高质量、可维护的代码和解决方案。所有回答必须使用中文。
+
+---
+
+## 技术栈与架构约束
+
+* 严格遵循 Electron 主进程与渲染进程分离架构。
+* 主进程负责应用生命周期、窗口管理、系统级操作。
+* 渲染进程仅处理 UI 逻辑，禁止直接访问 Node.js API，需通过预加载脚本安全暴露接口。
+* 主渲染进程通信统一使用 IPC，禁止使用 remote 模块。
+
+---
+
+## 编码规范
+
+* 统一使用 4 个空格缩进（如项目为 2 个空格则保持一致）。
+* 变量、函数命名采用 camelCase。
+* 所有函数、类需有简明注释，说明用途与参数。
+* 代码示例需简洁、易懂，优先贴合项目现有风格。
+
+---
+
+## 错误处理
+
+* 统一使用 try-catch 结构化错误处理。
+* 网络请求需实现重试与超时机制。
+* 主进程需监听并处理 `process.on('uncaughtException')`。
+* 渲染进程需处理 `window.onerror` 与 `process.on('unhandledRejection')`。
+* 推荐使用 electron-log 或类似库进行日志管理。
+
+---
+
+## 安全性要求
+
+* 默认禁用 nodeIntegration，启用 contextIsolation。
+* 禁止 remote 模块，所有主进程操作通过 IPC 实现。
+* 严格验证和清理所有用户输入，防止注入与 XSS 攻击。
+* 禁止加载不受信任的外部内容。
+
+---
+
+## 性能优化
+
+* 优化应用启动速度，减少主进程阻塞。
+* 主进程避免耗时操作，必要时使用工作线程或卸载至渲染进程。
+* 持续监控并优化内存与 CPU 占用。
+
+---
+
+## 任务分解建议
+
+* 明确区分主进程与渲染进程的代码需求。
+* 复杂功能拆分为小步骤，逐步实现与测试。
+* 任何 IPC 通信需详细说明数据流与安全措施。
+
+---
+
+## 示例格式建议
+
+* 代码块需注明所属进程（主/渲染/预加载）。
+* 关键配置（如 BrowserWindow 参数、CSP 设置）需单独列出。
+* 说明每个代码片段的作用与注意事项。

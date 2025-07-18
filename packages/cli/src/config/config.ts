@@ -338,6 +338,19 @@ export async function loadCliConfig(
 
   const sandboxConfig = await loadSandboxConfig(settings, argv);
 
+  const apiKeyPool = process.env.GEMINI_API_KEY_POOL;
+  const singleApiKey = process.env.GEMINI_API_KEY;
+  let apiKeys: string[] = [];
+
+  if (apiKeyPool) {
+    apiKeys = apiKeyPool
+      .split(',')
+      .map((key) => key.trim())
+      .filter(Boolean);
+  } else if (singleApiKey) {
+    apiKeys = [singleApiKey];
+  }
+
   return new Config({
     sessionId,
     embeddingModel: DEFAULT_GEMINI_EMBEDDING_MODEL,
@@ -388,6 +401,7 @@ export async function loadCliConfig(
     fileDiscoveryService: fileService,
     bugCommand: settings.bugCommand,
     model: argv.model!,
+    apiKeys,
     extensionContextFilePaths,
     maxSessionTurns: settings.maxSessionTurns ?? -1,
     listExtensions: argv.listExtensions || false,

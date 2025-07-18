@@ -143,6 +143,7 @@ export interface ConfigParameters {
   fileDiscoveryService?: FileDiscoveryService;
   bugCommand?: BugCommandSettings;
   model: string;
+  apiKeys?: string[];
   extensionContextFilePaths?: string[];
   maxSessionTurns?: number;
   listExtensions?: boolean;
@@ -187,6 +188,7 @@ export class Config {
   private readonly cwd: string;
   private readonly bugCommand: BugCommandSettings | undefined;
   private readonly model: string;
+  private readonly apiKeys: string[];
   private readonly extensionContextFilePaths: string[];
   private readonly noBrowser: boolean;
   private readonly ideMode: boolean;
@@ -239,6 +241,7 @@ export class Config {
     this.fileDiscoveryService = params.fileDiscoveryService ?? null;
     this.bugCommand = params.bugCommand;
     this.model = params.model;
+    this.apiKeys = params.apiKeys ?? [];
     this.extensionContextFilePaths = params.extensionContextFilePaths ?? [];
     this.maxSessionTurns = params.maxSessionTurns ?? -1;
     this.listExtensions = params.listExtensions ?? false;
@@ -296,6 +299,10 @@ export class Config {
 
   getModel(): string {
     return this.contentGeneratorConfig?.model || this.model;
+  }
+
+  getApiKeys(): string[] {
+    return this.apiKeys;
   }
 
   setModel(newModel: string): void {

@@ -37,6 +37,7 @@ import {
   logUserPrompt,
   AuthType,
   getOauthClient,
+  apiKeyManager,
 } from '@google/gemini-cli-core';
 import { validateAuthMethod } from './config/auth.js';
 import { setMaxSizedBoxDebugging } from './ui/components/shared/MaxSizedBox.js';
@@ -110,6 +111,7 @@ export async function main() {
     sessionId,
     argv,
   );
+  apiKeyManager.init(config.getApiKeys());
 
   if (argv.promptInteractive && !process.stdin.isTTY) {
     console.error(

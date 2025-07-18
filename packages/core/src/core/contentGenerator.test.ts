@@ -13,9 +13,11 @@ import {
 import { createCodeAssistContentGenerator } from '../code_assist/codeAssist.js';
 import { GoogleGenAI } from '@google/genai';
 import { Config } from '../config/config.js';
+import { apiKeyManager } from '../services/ApiKeyManager.js';
 
 vi.mock('../code_assist/codeAssist.js');
 vi.mock('@google/genai');
+vi.mock('../services/ApiKeyManager.js');
 
 const mockConfig = {} as unknown as Config;
 
@@ -41,6 +43,7 @@ describe('createContentGenerator', () => {
       models: {},
     } as unknown;
     vi.mocked(GoogleGenAI).mockImplementation(() => mockGenerator as never);
+    vi.mocked(apiKeyManager.getNextKey).mockReturnValue('test-api-key');
     const generator = await createContentGenerator(
       {
         model: 'test-model',
@@ -134,5 +137,59 @@ describe('createContentGeneratorConfig', () => {
     );
     expect(config.apiKey).toBeUndefined();
     expect(config.vertexai).toBeUndefined();
+  });
+});
+
+describe('API Key Pooling', () => {
+  const mockConfig = {} as unknown as Config;
+
+  beforeEach(() => {
+    // 在每个测试前重置模拟，确保测试之间是独立的
+    vi.clearAllMocks();
+  });
+
+  it('should use a different API key from the pool for each subsequent call', async () => {
+    // 1. Arrange (准备)
+    const keyPool = ['key-A', 'key-B', 'key-C'];
+    
+    // 模拟 getNextKey 方法，使其按顺序返回池中的密钥
+    const getNextKeyMock = vi.fn()
+      .mockReturnValueOnce(keyPool[0])
+      .mockReturnValueOnce(keyPool[1])
+      .mockReturnValueOnce(keyPool[2])
+      .mockReturnValueOnce(keyPool[0]); // 第四次调用，循环回第一个
+
+    vi.mocked(apiKeyManager.getNextKey).mockImplementation(getNextKeyMock);
+
+    const contentGeneratorConfig = {
+      model: 'test-model',
+      authType: AuthType.USE_GEMINI,
+    };
+
+    // 2. Act (执行)
+    // 连续调用四次 createContentGenerator 来模拟四次独立的 API 请求
+    await createContentGenerator(contentGeneratorConfig, mockConfig);
+    await createContentGenerator(contentGeneratorConfig, mockConfig);
+    await createContentGenerator(contentGeneratorConfig, mockConfig);
+    await createContentGenerator(contentGeneratorConfig, mockConfig);
+
+    // 3. Assert (断言)
+    // 验证 GoogleGenAI 的构造函数是否被正确调用了四次
+    expect(GoogleGenAI).toHaveBeenCalledTimes(4);
+
+    // 验证每一次调用时，传入的 apiKey 是否符合轮询顺序
+    expect(vi.mocked(GoogleGenAI).mock.calls[0][0]).toEqual(
+      expect.objectContaining({ apiKey: 'key-A' })
+    );
+    expect(vi.mocked(GoogleGenAI).mock.calls[1][0]).toEqual(
+      expect.objectContaining({ apiKey: 'key-B' })
+    );
+    expect(vi.mocked(GoogleGenAI).mock.calls[2][0]).toEqual(
+      expect.objectContaining({ apiKey: 'key-C' })
+    );
+    // 验证第四次调用时，密钥是否已循环回第一个
+    expect(vi.mocked(GoogleGenAI).mock.calls[3][0]).toEqual(
+      expect.objectContaining({ apiKey: 'key-A' })
+    );
   });
 });

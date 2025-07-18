@@ -58,6 +58,7 @@ import {
   FlashFallbackEvent,
   logFlashFallback,
   AuthType,
+  apiKeyManager,
 } from '@google/gemini-cli-core';
 import { validateAuthMethod } from '../config/auth.js';
 import { useLogger } from './hooks/useLogger.js';
@@ -105,6 +106,17 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
 
   useEffect(() => {
     checkForUpdates().then(setUpdateMessage);
+  }, []);
+
+  useEffect(() => {
+    const poolSize = apiKeyManager.getPoolSize();
+    if (poolSize > 1) {
+      // This is logged to the console, which is managed by the ConsolePatcher,
+      // so it will appear in the UI if the user has debug mode on.
+      console.log(
+        `[INFO] Detected ${poolSize} API keys. API polling is enabled.`,
+      );
+    }
   }, []);
 
   const { history, addItem, clearItems, loadHistory } = useHistory();

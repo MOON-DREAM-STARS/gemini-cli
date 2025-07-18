@@ -38,6 +38,7 @@ export * from './utils/quotaErrorDetection.js';
 export * from './services/fileDiscoveryService.js';
 export * from './services/gitService.js';
 export * from './services/ideContext.js';
+export * from './services/ApiKeyManager.js';
 
 // Export base tool definitions
 export * from './tools/tools.js';

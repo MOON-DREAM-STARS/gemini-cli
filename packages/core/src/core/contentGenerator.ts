@@ -18,6 +18,7 @@ import { DEFAULT_GEMINI_MODEL } from '../config/models.js';
 import { Config } from '../config/config.js';
 import { getEffectiveModel } from './modelCheck.js';
 import { UserTierId } from '../code_assist/types.js';
+import { apiKeyManager } from '../services/ApiKeyManager.js';
 
 /**
  * Interface abstracting the core functionalities for generating content and counting tokens.
@@ -133,7 +134,7 @@ export async function createContentGenerator(
     config.authType === AuthType.USE_VERTEX_AI
   ) {
     const googleGenAI = new GoogleGenAI({
-      apiKey: config.apiKey === '' ? undefined : config.apiKey,
+      apiKey: apiKeyManager.getNextKey() ?? undefined,
       vertexai: config.vertexai,
       httpOptions,
     });
