@@ -152,9 +152,10 @@ describe('API Key Pooling', () => {
   it('should use a different API key from the pool for each subsequent call', async () => {
     // 1. Arrange (准备)
     const keyPool = ['key-A', 'key-B', 'key-C'];
-    
+
     // 模拟 getNextKey 方法，使其按顺序返回池中的密钥
-    const getNextKeyMock = vi.fn()
+    const getNextKeyMock = vi
+      .fn()
       .mockReturnValueOnce(keyPool[0])
       .mockReturnValueOnce(keyPool[1])
       .mockReturnValueOnce(keyPool[2])
@@ -180,17 +181,17 @@ describe('API Key Pooling', () => {
 
     // 验证每一次调用时，传入的 apiKey 是否符合轮询顺序
     expect(vi.mocked(GoogleGenAI).mock.calls[0][0]).toEqual(
-      expect.objectContaining({ apiKey: 'key-A' })
+      expect.objectContaining({ apiKey: 'key-A' }),
     );
     expect(vi.mocked(GoogleGenAI).mock.calls[1][0]).toEqual(
-      expect.objectContaining({ apiKey: 'key-B' })
+      expect.objectContaining({ apiKey: 'key-B' }),
     );
     expect(vi.mocked(GoogleGenAI).mock.calls[2][0]).toEqual(
-      expect.objectContaining({ apiKey: 'key-C' })
+      expect.objectContaining({ apiKey: 'key-C' }),
     );
     // 验证第四次调用时，密钥是否已循环回第一个
     expect(vi.mocked(GoogleGenAI).mock.calls[3][0]).toEqual(
-      expect.objectContaining({ apiKey: 'key-A' })
+      expect.objectContaining({ apiKey: 'key-A' }),
     );
   });
 });

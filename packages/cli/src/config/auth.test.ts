@@ -38,9 +38,14 @@ describe('validateAuthMethod', () => {
       expect(validateAuthMethod(AuthType.USE_GEMINI)).toBeNull();
     });
 
-    it('should return an error message if GEMINI_API_KEY is not set', () => {
+    it('should return null if GEMINI_API_KEY_POOL is set', () => {
+      process.env.GEMINI_API_KEY_POOL = 'test-key-1,test-key-2';
+      expect(validateAuthMethod(AuthType.USE_GEMINI)).toBeNull();
+    });
+
+    it('should return an error message if no Gemini API key is set', () => {
       expect(validateAuthMethod(AuthType.USE_GEMINI)).toBe(
-        'GEMINI_API_KEY environment variable not found. Add that to your environment and try again (no reload needed if using .env)!',
+        'GEMINI_API_KEY or GEMINI_API_KEY_POOL environment variable not found. Add that to your environment and try again (no reload needed if using .env)!',
       );
     });
   });

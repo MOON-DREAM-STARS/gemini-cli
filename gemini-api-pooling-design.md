@@ -21,7 +21,7 @@
 
 我们需要确定用户如何向 CLI 提供多个 API 密钥。
 
-**主要文件**: `packages/cli/src/config/config.ts`, `packages/cli/src/config/auth.ts`
+**主要文件**: `packages/cli/src/config/config.ts`, `packages/cli/src/config/auth.ts`, `packages/cli/src/gemini.tsx`
 
 **技术节点与建议**:
 
@@ -39,6 +39,7 @@
     2.  如果存在，则通过 `split(',')` 将其解析为一个字符串数组。
     3.  如果不存在，则回退到检查现有的 `process.env.GEMINI_API_KEY`，并将其作为一个单元素的数组。
     4.  将这个密钥数组（`string[]`）存储在全局配置对象中，例如 `config.apiKeys`。
+    5.  在 `auth.ts` 和 `gemini.tsx` 中，修改启动时的身份验证检查逻辑，使其在验证 Gemini API 密钥时，同时识别 `GEMINI_API_KEY` 和 `GEMINI_API_KEY_POOL`。
 
 - **方案 B: 使用配置文件**
   - **实现**: 在 `.gemini/config.json` 或类似文件中支持一个新的字段。
