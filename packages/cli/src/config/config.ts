@@ -54,9 +54,11 @@ export interface CliArgs {
   telemetryOtlpEndpoint: string | undefined;
   telemetryLogPrompts: boolean | undefined;
   allowedMcpServerNames: string[] | undefined;
+  experimentalAcp: boolean | undefined;
   extensions: string[] | undefined;
   listExtensions: boolean | undefined;
   ideMode: boolean | undefined;
+  proxy: string | undefined;
 }
 
 export async function parseArguments(): Promise<CliArgs> {
@@ -161,6 +163,10 @@ export async function parseArguments(): Promise<CliArgs> {
       description: 'Enables checkpointing of file edits',
       default: false,
     })
+    .option('experimental-acp', {
+      type: 'boolean',
+      description: 'Starts the agent in ACP mode',
+    })
     .option('allowed-mcp-server-names', {
       type: 'array',
       string: true,
@@ -182,7 +188,11 @@ export async function parseArguments(): Promise<CliArgs> {
       type: 'boolean',
       description: 'Run in IDE mode?',
     })
-
+    .option('proxy', {
+      type: 'string',
+      description:
+        'Proxy for gemini client, like schema://user:password@host:port',
+    })
     .version(await getCliVersion()) // This will enable the --version flag based on package.json
     .alias('v', 'version')
     .help()
@@ -393,6 +403,7 @@ export async function loadCliConfig(
     },
     checkpointing: argv.checkpointing || settings.checkpointing?.enabled,
     proxy:
+      argv.proxy ||
       process.env.HTTPS_PROXY ||
       process.env.https_proxy ||
       process.env.HTTP_PROXY ||
@@ -404,6 +415,7 @@ export async function loadCliConfig(
     apiKeys,
     extensionContextFilePaths,
     maxSessionTurns: settings.maxSessionTurns ?? -1,
+    experimentalAcp: argv.experimentalAcp || false,
     listExtensions: argv.listExtensions || false,
     activeExtensions: activeExtensions.map((e) => ({
       name: e.config.name,
