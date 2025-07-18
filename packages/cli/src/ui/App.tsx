@@ -68,6 +68,7 @@ import {
   useSessionStats,
 } from './contexts/SessionContext.js';
 import { useGitBranchName } from './hooks/useGitBranchName.js';
+import { useFocus } from './hooks/useFocus.js';
 import { useBracketedPaste } from './hooks/useBracketedPaste.js';
 import { useTextBuffer } from './components/shared/text-buffer.js';
 import * as fs from 'fs';
@@ -99,6 +100,7 @@ export const AppWrapper = (props: AppProps) => (
 );
 
 const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
+  const isFocused = useFocus();
   useBracketedPaste();
   const [updateMessage, setUpdateMessage] = useState<string | null>(null);
   const { stdout } = useStdout();
@@ -391,7 +393,6 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
   } = useSlashCommandProcessor(
     config,
     settings,
-    history,
     addItem,
     clearItems,
     loadHistory,
@@ -940,6 +941,7 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
                   commandContext={commandContext}
                   shellModeActive={shellModeActive}
                   setShellModeActive={setShellModeActive}
+                  focus={isFocused}
                 />
               )}
             </>
